@@ -4,23 +4,26 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Which Tales Runner Character Are You?</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;800&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --cream: #FDF6E3;
-    --dark: #1A0A2E;
-    --gold: #C9922A;
-    --gold-light: #F0C96A;
-    --rose: #C4566A;
-    --teal: #2A7F7F;
-    --purple: #6B3FA0;
-    --leaf: #3A7D44;
+    --bg: #0D0A1A;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.1);
+    --gold: #FFD166;
+    --gold2: #F4A261;
+    --pink: #EF8FAB;
+    --teal: #06D6A0;
+    --purple: #9B72CF;
+    --blue: #4FC3F7;
+    --text: #F0EAF8;
+    --muted: rgba(240,234,248,0.5);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: var(--dark);
+    background: var(--bg);
     font-family: 'Sarabun', sans-serif;
     min-height: 100vh;
     display: flex;
@@ -30,237 +33,297 @@
     position: relative;
   }
 
+  /* Animated background */
   body::before {
     content: '';
     position: fixed;
     inset: 0;
     background:
-      radial-gradient(ellipse at 20% 20%, rgba(107,63,160,0.25) 0%, transparent 50%),
-      radial-gradient(ellipse at 80% 80%, rgba(196,86,106,0.2) 0%, transparent 50%),
-      radial-gradient(ellipse at 50% 50%, rgba(42,127,127,0.1) 0%, transparent 60%);
+      radial-gradient(ellipse 60% 50% at 15% 25%, rgba(155,114,207,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 70%, rgba(239,143,171,0.15) 0%, transparent 55%),
+      radial-gradient(ellipse 40% 40% at 50% 50%, rgba(6,214,160,0.06) 0%, transparent 50%);
     pointer-events: none;
   }
 
-  .stars {
+  /* Floating orbs */
+  .orb {
     position: fixed;
-    inset: 0;
+    border-radius: 50%;
+    filter: blur(60px);
     pointer-events: none;
-    overflow: hidden;
+    animation: drift var(--t) ease-in-out infinite alternate;
+  }
+  .orb1 { width: 300px; height: 300px; background: rgba(155,114,207,0.12); top: -100px; left: -100px; --t: 8s; }
+  .orb2 { width: 250px; height: 250px; background: rgba(239,143,171,0.1); bottom: -80px; right: -80px; --t: 11s; }
+  .orb3 { width: 180px; height: 180px; background: rgba(255,209,102,0.08); top: 40%; right: 10%; --t: 7s; }
+
+  @keyframes drift {
+    from { transform: translate(0, 0) scale(1); }
+    to { transform: translate(30px, 20px) scale(1.1); }
   }
 
+  /* Stars */
+  .stars { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
   .star {
     position: absolute;
-    width: 2px;
-    height: 2px;
-    background: var(--gold-light);
     border-radius: 50%;
+    background: white;
     animation: twinkle var(--d) ease-in-out infinite;
     opacity: 0;
   }
-
   @keyframes twinkle {
-    0%, 100% { opacity: 0; transform: scale(1); }
-    50% { opacity: 0.8; transform: scale(1.5); }
+    0%,100% { opacity: 0; }
+    50% { opacity: var(--op); }
   }
 
   .wrap {
     width: 100%;
-    max-width: 560px;
+    max-width: 580px;
     padding: 20px;
     position: relative;
     z-index: 1;
   }
 
-  .screen { display: none; animation: fadeUp 0.5s ease forwards; }
-  .screen.active { display: block; }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp 0.45s cubic-bezier(0.16,1,0.3,1) forwards; }
 
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   /* ===== INTRO ===== */
   .intro-card {
-    background: rgba(253,246,227,0.05);
-    border: 1px solid rgba(201,146,42,0.3);
-    border-radius: 20px;
-    padding: 40px 32px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 28px;
+    padding: 48px 36px 40px;
     text-align: center;
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 60px rgba(155,114,207,0.1), inset 0 1px 0 rgba(255,255,255,0.08);
   }
 
-  .crown {
-    font-size: 56px;
-    display: block;
-    margin-bottom: 16px;
-    animation: float 3s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .intro-title {
-    font-family: 'Cinzel', serif;
-    font-size: 13px;
-    letter-spacing: 0.2em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 12px;
-  }
-
-  .intro-heading {
-    font-family: 'Cinzel', serif;
-    font-size: 26px;
-    color: var(--cream);
-    line-height: 1.3;
-    margin-bottom: 8px;
-  }
-
-  .intro-sub {
-    font-size: 14px;
-    color: rgba(253,246,227,0.55);
-    margin-bottom: 28px;
-    line-height: 1.6;
-  }
-
-  .chars-preview {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-  }
-
-  .char-chip {
-    background: rgba(201,146,42,0.12);
-    border: 1px solid rgba(201,146,42,0.25);
+  .game-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(255,209,102,0.15), rgba(244,162,97,0.1));
+    border: 1px solid rgba(255,209,102,0.3);
     border-radius: 99px;
-    padding: 6px 14px;
-    font-size: 13px;
-    color: var(--gold-light);
-  }
-
-  .btn-start {
-    background: linear-gradient(135deg, var(--gold), #A0721A);
-    color: var(--dark);
-    border: none;
-    border-radius: 99px;
-    padding: 14px 40px;
-    font-family: 'Cinzel', serif;
-    font-size: 15px;
+    padding: 6px 18px;
+    font-size: 12px;
     font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 20px rgba(201,146,42,0.4);
-    letter-spacing: 0.05em;
-  }
-
-  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,146,42,0.5); }
-  .btn-start:active { transform: translateY(0); }
-
-  /* ===== QUIZ ===== */
-  .progress-bar {
-    height: 3px;
-    background: rgba(201,146,42,0.2);
-    border-radius: 99px;
-    margin-bottom: 24px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    border-radius: 99px;
-    transition: width 0.4s ease;
-  }
-
-  .q-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
     margin-bottom: 20px;
   }
 
-  .q-num {
-    font-size: 12px;
-    color: var(--gold);
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.1em;
+  .intro-emoji {
+    font-size: 64px;
+    display: block;
+    margin-bottom: 16px;
+    animation: float 3.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 20px rgba(255,209,102,0.4));
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-12px) rotate(2deg); }
   }
 
-  .q-icon { font-size: 22px; }
+  .intro-heading {
+    font-family: 'Baloo 2', cursive;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 10px;
+  }
+
+  .intro-heading span {
+    background: linear-gradient(135deg, var(--gold), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .intro-sub {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.7;
+  }
+
+  /* Character preview grid */
+  .chars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .char-preview {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 14px 8px 10px;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .char-preview:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-2px);
+  }
+
+  .char-preview .emoji { font-size: 28px; display: block; margin-bottom: 6px; }
+  .char-preview .cname { font-size: 11px; font-weight: 700; color: var(--text); display: block; }
+  .char-preview .ctitle { font-size: 10px; color: var(--muted); display: block; margin-top: 2px; }
+
+  .btn-start {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: #1A0A00;
+    border: none;
+    border-radius: 99px;
+    padding: 16px 48px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 6px 24px rgba(255,209,102,0.35);
+    letter-spacing: 0.02em;
+  }
+  .btn-start:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(255,209,102,0.45); }
+  .btn-start:active { transform: translateY(0); }
+
+  /* ===== QUIZ ===== */
+  .progress-wrap { margin-bottom: 20px; }
+
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .progress-label { font-size: 12px; color: var(--gold); font-weight: 700; letter-spacing: 0.08em; }
+  .progress-pct { font-size: 12px; color: var(--muted); }
+
+  .progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--purple), var(--pink), var(--gold));
+    border-radius: 99px;
+    transition: width 0.5s cubic-bezier(0.16,1,0.3,1);
+  }
 
   .q-card {
-    background: rgba(253,246,227,0.05);
-    border: 1px solid rgba(201,146,42,0.2);
-    border-radius: 16px;
-    padding: 28px 24px;
-    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px;
+    padding: 32px 28px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.06);
   }
 
+  .q-icon-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .q-icon { font-size: 26px; }
+  .q-num { font-size: 12px; color: var(--muted); font-weight: 600; }
+
   .q-text {
-    font-size: 18px;
-    color: var(--cream);
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
     margin-bottom: 24px;
     line-height: 1.5;
-    text-align: center;
   }
 
   .options { display: flex; flex-direction: column; gap: 10px; }
 
   .opt-btn {
-    background: rgba(253,246,227,0.04);
-    border: 1px solid rgba(253,246,227,0.12);
-    border-radius: 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 14px;
     padding: 14px 18px;
     text-align: left;
-    color: rgba(253,246,227,0.85);
+    color: rgba(240,234,248,0.8);
     font-family: 'Sarabun', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     transition: all 0.2s;
     line-height: 1.5;
     display: flex;
     align-items: center;
-    gap: 12px;
-  }
-
-  .opt-btn:hover {
-    background: rgba(201,146,42,0.12);
-    border-color: rgba(201,146,42,0.4);
-    color: var(--cream);
-    transform: translateX(4px);
-  }
-
-  .opt-btn.selected {
-    background: rgba(201,146,42,0.2);
-    border-color: var(--gold);
-    color: var(--gold-light);
-  }
-
-  .opt-icon { font-size: 18px; flex-shrink: 0; }
-
-  /* ===== RESULT ===== */
-  .result-card {
-    background: rgba(253,246,227,0.05);
-    border-radius: 20px;
-    padding: 36px 28px;
-    text-align: center;
-    backdrop-filter: blur(10px);
+    gap: 14px;
     position: relative;
     overflow: hidden;
   }
 
-  .result-card::before {
+  .opt-btn::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 20px;
+    background: linear-gradient(135deg, var(--purple), var(--pink));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .opt-btn:hover {
+    border-color: rgba(155,114,207,0.5);
+    color: var(--text);
+    transform: translateX(4px);
+  }
+  .opt-btn:hover::before { opacity: 0.08; }
+
+  .opt-btn.selected {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .opt-btn.selected::before { opacity: 0.12; background: linear-gradient(135deg, var(--gold), var(--gold2)); }
+
+  .opt-icon { font-size: 20px; flex-shrink: 0; position: relative; z-index: 1; }
+  .opt-text { position: relative; z-index: 1; }
+
+  /* ===== RESULT ===== */
+  .result-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 28px;
+    padding: 40px 32px 36px;
+    text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 80px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.07);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(80px);
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+    transition: background 0.5s;
+  }
+
+  .result-border {
+    position: absolute;
+    inset: 0;
+    border-radius: 28px;
     padding: 1px;
-    background: linear-gradient(135deg, var(--gold), transparent, var(--rose));
+    background: var(--char-grad, linear-gradient(135deg, var(--gold), var(--pink)));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -268,53 +331,97 @@
   }
 
   .result-emoji {
-    font-size: 72px;
+    font-size: 80px;
     display: block;
-    margin-bottom: 12px;
-    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    margin-bottom: 10px;
+    animation: popBounce 0.6s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+    filter: drop-shadow(0 0 30px var(--char-color, rgba(255,209,102,0.5)));
+  }
+  @keyframes popBounce {
+    0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
+    70% { transform: scale(1.1) rotate(3deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
   }
 
-  @keyframes popIn {
-    from { transform: scale(0.3); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+  .result-dubbed {
+    display: inline-block;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 99px;
+    padding: 4px 14px;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 12px;
+    letter-spacing: 0.1em;
   }
 
   .result-label {
-    font-family: 'Cinzel', serif;
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    color: var(--gold);
-    text-transform: uppercase;
-    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
   }
 
   .result-name {
-    font-family: 'Cinzel', serif;
-    font-size: 28px;
-    color: var(--cream);
-    margin-bottom: 6px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 36px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    background: var(--char-grad, linear-gradient(135deg, var(--gold), var(--pink)));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     line-height: 1.2;
   }
 
   .result-role {
-    font-size: 13px;
-    color: var(--gold-light);
-    margin-bottom: 16px;
-    letter-spacing: 0.05em;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
   }
 
   .result-divider {
-    width: 40px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 0 auto 16px;
+    width: 48px;
+    height: 2px;
+    background: var(--char-grad, linear-gradient(90deg, var(--gold), var(--pink)));
+    margin: 0 auto 20px;
+    border-radius: 99px;
+  }
+
+  /* Why section */
+  .why-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    text-align: left;
+  }
+
+  .why-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--char-color, var(--gold));
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .why-text {
+    font-size: 14px;
+    color: rgba(240,234,248,0.75);
+    line-height: 1.8;
   }
 
   .result-desc {
-    font-size: 14px;
-    color: rgba(253,246,227,0.7);
-    line-height: 1.8;
+    font-size: 15px;
+    color: rgba(240,234,248,0.75);
+    line-height: 1.85;
     margin-bottom: 20px;
+    text-align: left;
   }
 
   .result-traits {
@@ -322,103 +429,89 @@
     flex-wrap: wrap;
     gap: 8px;
     justify-content: center;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   .trait-pill {
-    padding: 5px 14px;
+    padding: 6px 16px;
     border-radius: 99px;
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 700;
     border: 1px solid;
+    letter-spacing: 0.05em;
   }
 
-  .style-row {
-    background: rgba(201,146,42,0.08);
-    border: 1px solid rgba(201,146,42,0.2);
-    border-radius: 12px;
-    padding: 14px;
+  .playstyle-box {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 14px 18px;
     margin-bottom: 24px;
     font-size: 13px;
-    color: rgba(253,246,227,0.75);
-    line-height: 1.6;
+    color: rgba(240,234,248,0.7);
+    line-height: 1.7;
+    text-align: left;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
   }
-
-  .style-row strong {
-    color: var(--gold-light);
-    font-weight: 600;
-  }
+  .playstyle-box .ps-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
 
   .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 
   .btn-share {
-    background: linear-gradient(135deg, var(--rose), #A03050);
+    background: linear-gradient(135deg, var(--pink), #C44A6A);
     color: white;
     border: none;
     border-radius: 99px;
-    padding: 12px 28px;
+    padding: 13px 30px;
     font-family: 'Sarabun', sans-serif;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 16px rgba(196,86,106,0.4);
+    box-shadow: 0 4px 18px rgba(239,143,171,0.35);
   }
-
-  .btn-share:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,86,106,0.5); }
+  .btn-share:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(239,143,171,0.45); }
 
   .btn-retry {
     background: transparent;
-    color: rgba(253,246,227,0.6);
-    border: 1px solid rgba(253,246,227,0.2);
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.15);
     border-radius: 99px;
-    padding: 12px 28px;
+    padding: 13px 30px;
     font-family: 'Sarabun', sans-serif;
     font-size: 14px;
     cursor: pointer;
     transition: all 0.2s;
   }
-
-  .btn-retry:hover { border-color: rgba(253,246,227,0.5); color: var(--cream); }
+  .btn-retry:hover { border-color: rgba(255,255,255,0.4); color: var(--text); }
 
   .share-toast {
     position: fixed;
-    bottom: 24px;
+    bottom: 28px;
     left: 50%;
     transform: translateX(-50%) translateY(80px);
-    background: var(--dark);
+    background: rgba(13,10,26,0.95);
     border: 1px solid var(--gold);
-    color: var(--gold-light);
-    padding: 12px 24px;
+    color: var(--gold);
+    padding: 12px 26px;
     border-radius: 99px;
     font-size: 13px;
-    transition: transform 0.3s ease;
+    font-weight: 600;
+    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
     z-index: 999;
     white-space: nowrap;
+    backdrop-filter: blur(10px);
   }
-
   .share-toast.show { transform: translateX(-50%) translateY(0); }
-
-  .download-hint {
-    margin-top: 20px;
-    padding: 14px 16px;
-    background: rgba(42,127,127,0.12);
-    border: 1px solid rgba(42,127,127,0.3);
-    border-radius: 12px;
-    font-size: 13px;
-    color: rgba(253,246,227,0.65);
-    line-height: 1.6;
-  }
-
-  .download-hint a {
-    color: #5BC8C8;
-    text-decoration: none;
-    font-weight: 600;
-  }
 </style>
 </head>
 <body>
 
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
 <div class="stars" id="stars"></div>
 
 <div class="wrap">
@@ -426,16 +519,41 @@
   <!-- INTRO -->
   <div class="screen active" id="screen-intro">
     <div class="intro-card">
-      <span class="crown">👑</span>
-      <p class="intro-title">Tales Runner Quiz</p>
-      <h1 class="intro-heading">คุณคือตัวละครไหน<br>ใน Fairy Tale Land?</h1>
-      <p class="intro-sub">ตอบ 7 คำถาม แล้วค้นพบว่า<br>นิสัยแกตรงกับใครในเกมมากที่สุด</p>
-      <div class="chars-preview">
-        <span class="char-chip">🐺 Wolf King</span>
-        <span class="char-chip">🌹 Red Rose</span>
-        <span class="char-chip">🧙 Wizard</span>
-        <span class="char-chip">🦊 Fox Trickster</span>
-        <span class="char-chip">🌙 Moon Princess</span>
+      <div class="game-badge">✨ Tales Runner Quiz</div>
+      <span class="intro-emoji">🏃</span>
+      <h1 class="intro-heading">คุณคือตัวละครไหน<br>ใน <span>Tales Runner</span>?</h1>
+      <p class="intro-sub">ตอบ 8 คำถาม แล้วค้นพบว่านิสัยของแก<br>ตรงกับ Runner คนไหนมากที่สุด</p>
+      <div class="chars-grid">
+        <div class="char-preview">
+          <span class="emoji">⚽</span>
+          <span class="cname">Chowon</span>
+          <span class="ctitle">The Athlete</span>
+        </div>
+        <div class="char-preview">
+          <span class="emoji">🎬</span>
+          <span class="cname">Ming Ming</span>
+          <span class="ctitle">The Movie Star</span>
+        </div>
+        <div class="char-preview">
+          <span class="emoji">🩰</span>
+          <span class="cname">Lina</span>
+          <span class="ctitle">The Ballerina</span>
+        </div>
+        <div class="char-preview">
+          <span class="emoji">🐾</span>
+          <span class="cname">Big Bo</span>
+          <span class="ctitle">The Strong Man</span>
+        </div>
+        <div class="char-preview">
+          <span class="emoji">👻</span>
+          <span class="cname">Maki</span>
+          <span class="ctitle">The Possessed</span>
+        </div>
+        <div class="char-preview">
+          <span class="emoji">🏍️</span>
+          <span class="cname">Rough</span>
+          <span class="ctitle">The Hurricane</span>
+        </div>
       </div>
       <button class="btn-start" onclick="startQuiz()">เริ่มเลย ✨</button>
     </div>
@@ -443,12 +561,18 @@
 
   <!-- QUIZ -->
   <div class="screen" id="screen-quiz">
-    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
-    <div class="q-header">
-      <span class="q-num" id="q-num">คำถาม 1 / 7</span>
-      <span class="q-icon" id="q-icon">🌟</span>
+    <div class="progress-wrap">
+      <div class="progress-info">
+        <span class="progress-label" id="q-num">คำถาม 1 / 8</span>
+        <span class="progress-pct" id="q-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
     </div>
     <div class="q-card">
+      <div class="q-icon-wrap">
+        <span class="q-icon" id="q-icon">🌟</span>
+        <span class="q-num" id="q-sub"></span>
+      </div>
       <p class="q-text" id="q-text"></p>
       <div class="options" id="options"></div>
     </div>
@@ -457,175 +581,256 @@
   <!-- RESULT -->
   <div class="screen" id="screen-result">
     <div class="result-card">
+      <div class="result-glow" id="r-glow"></div>
+      <div class="result-border" id="r-border"></div>
       <span class="result-emoji" id="r-emoji"></span>
+      <div class="result-dubbed" id="r-dubbed"></div>
       <p class="result-label">คุณคือ</p>
       <h2 class="result-name" id="r-name"></h2>
       <p class="result-role" id="r-role"></p>
-      <div class="result-divider"></div>
+      <div class="result-divider" id="r-divider"></div>
       <p class="result-desc" id="r-desc"></p>
+      <div class="why-box">
+        <div class="why-title" id="r-why-title">🔍 ทำไมแกถึงเป็นตัวละครนี้?</div>
+        <div class="why-text" id="r-why"></div>
+      </div>
       <div class="result-traits" id="r-traits"></div>
-      <div class="style-row" id="r-style"></div>
+      <div class="playstyle-box" id="r-style"></div>
       <div class="btn-row">
         <button class="btn-share" onclick="shareResult()">📤 แชร์ผลลัพธ์</button>
         <button class="btn-retry" onclick="retryQuiz()">ลองใหม่</button>
-      </div>
-      <div class="download-hint">
-        🎮 อยากเล่นเป็นตัวละครนี้จริงๆ? <a href="#">ดาวน์โหลด Tales Runner ฟรี</a> แล้วรับ Starter Pack พิเศษสำหรับตัวละครของคุณ!
       </div>
     </div>
   </div>
 
 </div>
 
-<div class="share-toast" id="toast">✅ คัดลอกข้อความแล้ว! นำไปแชร์ได้เลย</div>
+<div class="share-toast" id="toast">✅ คัดลอกแล้ว! นำไปแชร์ได้เลย</div>
 
 <script>
 const questions = [
   {
-    icon: "🌙",
-    text: "ตอนเจอด่านที่ยากมาก คุณทำยังไง?",
+    icon: "💭",
+    sub: "เกี่ยวกับตัวเอง",
+    text: "ถ้าให้เพื่อนอธิบายแกด้วยประโยคเดียว เขาจะพูดว่าอะไร?",
     options: [
-      { icon: "💪", text: "돌진! วิ่งเข้าไปเลยดีกว่า", scores: { wolf: 3, fox: 1 } },
-      { icon: "🔍", text: "ดูก่อน วางแผนทีละขั้น", scores: { wizard: 3, princess: 1 } },
-      { icon: "😄", text: "ขำไปก่อน แล้วค่อยลอง", scores: { fox: 3, rose: 1 } },
-      { icon: "🤝", text: "ชวนเพื่อนมาช่วยกัน", scores: { rose: 3, princess: 2 } }
+      { icon: "🏆", text: "\"คนนี้ต้องชนะทุกอย่าง ไม่เคยยอมแพ้\"", scores: { chowon: 3, mingming: 1 } },
+      { icon: "👑", text: "\"ดูดีตลอด ใครๆ ก็รู้จัก\"", scores: { mingming: 3, lina: 1 } },
+      { icon: "🤍", text: "\"ใจดีมาก ดูแลทุกคนเสมอ\"", scores: { lina: 3, bigbo: 1 } },
+      { icon: "🐻", text: "\"ดูน่ากลัวแต่จริงๆ อ่อนโยนมาก\"", scores: { bigbo: 3 } },
+      { icon: "👻", text: "\"เงียบๆ ลึกลับ ไม่ค่อยแสดงออก\"", scores: { maki: 3, lina: 1 } },
+      { icon: "🏍️", text: "\"สนุกมาก อยู่ด้วยแล้วมีความสุขตลอด\"", scores: { rough: 3, chowon: 1 } }
     ]
   },
   {
-    icon: "🏰",
-    text: "ถ้าอยู่ใน Fairy Tale Land จริงๆ คุณอยากเป็นใคร?",
+    icon: "🎯",
+    sub: "เป้าหมายในชีวิต",
+    text: "ตอนนี้แกมีเป้าหมายอะไรในชีวิตมากที่สุด?",
     options: [
-      { icon: "👑", text: "เจ้าแห่งป่า ทุกคนต้องเกรงใจ", scores: { wolf: 3, fox: 1 } },
-      { icon: "🧙", text: "จอมเวทย์ที่รู้ความลับทุกอย่าง", scores: { wizard: 3 } },
-      { icon: "🌹", text: "นักผจญภัยใจกล้าที่ทุกคนรัก", scores: { rose: 3, fox: 1 } },
-      { icon: "🌙", text: "เจ้าหญิงลึกลับที่ไม่มีใครเข้าใจ", scores: { princess: 3, wizard: 1 } }
+      { icon: "🥇", text: "อยากเป็นที่ 1 ในสิ่งที่ทำ ต้องดีที่สุดเท่านั้น", scores: { chowon: 3, mingming: 1 } },
+      { icon: "🌟", text: "อยากให้คนอื่นจดจำและยอมรับ", scores: { mingming: 3, rough: 1 } },
+      { icon: "💌", text: "อยากใช้ชีวิตปกติธรรมดา มีความสุขเรียบๆ", scores: { lina: 2, maki: 2 } },
+      { icon: "🐾", text: "อยากช่วยเหลือคนที่แกรักให้มีชีวิตที่ดีขึ้น", scores: { bigbo: 3, lina: 1 } },
+      { icon: "🔓", text: "อยากหลุดพ้นจากสิ่งที่ทำให้แกไม่มีความสุข", scores: { maki: 3, rough: 1 } },
+      { icon: "🏁", text: "อยากกลับไปทำสิ่งที่แกรักได้อีกครั้ง", scores: { rough: 3, chowon: 1 } }
     ]
   },
   {
-    icon: "⚡",
-    text: "สไตล์การวิ่งของคุณในเกมเป็นแบบไหน?",
+    icon: "😤",
+    sub: "ตอนเจอปัญหา",
+    text: "เวลาเจอสถานการณ์ยากๆ แกรับมือยังไง?",
     options: [
-      { icon: "🔥", text: "ฟุลสปีด กดไปเรื่อยๆ ไม่หยุด", scores: { wolf: 3, rose: 1 } },
-      { icon: "🧠", text: "คิดก่อนกด เลือกเส้นทางที่ดีที่สุด", scores: { wizard: 3, princess: 1 } },
-      { icon: "🎭", text: "อ่านทางเก่ง ตัดสินใจเร็วมาก", scores: { fox: 3, wolf: 1 } },
-      { icon: "🌊", text: "สบายๆ ค่อยๆ ไป เน้นเก็บไอเทม", scores: { princess: 3, rose: 1 } }
+      { icon: "💪", text: "สู้เต็มที่ ไม่มีคำว่าถอย ลองใหม่จนกว่าจะผ่าน", scores: { chowon: 3 } },
+      { icon: "😤", text: "ยอมรับยาก แต่สุดท้ายก็ฝืนสู้เพราะความภูมิใจ", scores: { mingming: 3, chowon: 1 } },
+      { icon: "🤗", text: "อดทน ไม่บ่น พยายามต่อไปเพื่อคนที่แกรัก", scores: { lina: 3, bigbo: 1 } },
+      { icon: "🦁", text: "ใช้พลังงานทั้งหมด ช่วยทุกคนก่อนแล้วค่อยคิดถึงตัวเอง", scores: { bigbo: 3 } },
+      { icon: "😶", text: "เก็บไว้คนเดียว ไม่อยากให้ใครรู้ว่าแกเป็นทุกข์", scores: { maki: 3 } },
+      { icon: "😂", text: "ขำก่อน แล้วค่อยหาทางออก บรรยากาศเบาๆ ดีกว่า", scores: { rough: 3, mingming: 1 } }
     ]
   },
   {
-    icon: "🎨",
-    text: "ถ้าต้องเลือก Costume คุณจะเลือกสไตล์ไหน?",
+    icon: "🤝",
+    sub: "ความสัมพันธ์",
+    text: "แกสร้างเพื่อนใหม่ได้ยังไง?",
     options: [
-      { icon: "🖤", text: "ดำ, เทา, ดุดัน ดูน่ากลัวนิดๆ", scores: { wolf: 3 } },
-      { icon: "✨", text: "เลื่อมๆ มีประกาย ดูพิเศษ", scores: { wizard: 2, princess: 2 } },
-      { icon: "❤️", text: "สีสด สะดุดตา ดูสนุก", scores: { rose: 3, fox: 1 } },
-      { icon: "🌿", text: "ธรรมชาติ เรียบง่าย แต่มีเสน่ห์", scores: { fox: 3, princess: 1 } }
+      { icon: "⚡", text: "ง่ายมาก แกเป็นผู้นำตามธรรมชาติ คนอยากเข้ามาเอง", scores: { chowon: 3, rough: 1 } },
+      { icon: "✨", text: "แกดึงดูดด้วย Personality ที่โดดเด่น คนสังเกตแกเอง", scores: { mingming: 3 } },
+      { icon: "💕", text: "แกเป็นคนแรกที่เข้าหาและดูแล คนรู้สึกสบายใจ", scores: { lina: 3, bigbo: 1 } },
+      { icon: "🐻", text: "ยากตอนแรกเพราะคนเข้าใจผิด แต่พอรู้จักแล้วรักมาก", scores: { bigbo: 3, maki: 1 } },
+      { icon: "🌙", text: "ยากมาก แกมักจะถูกเข้าใจผิดหรือคนกลัวแก", scores: { maki: 3, bigbo: 1 } },
+      { icon: "🏍️", text: "เป็นธรรมชาติ แกเป็นคนสนุก ใครๆ ก็อยากอยู่ด้วย", scores: { rough: 3, chowon: 1 } }
     ]
   },
   {
-    icon: "🌟",
-    text: "เพื่อนรู้จักคุณในแบบไหน?",
+    icon: "💝",
+    sub: "สิ่งที่แกให้ความสำคัญ",
+    text: "อะไรคือสิ่งที่แกให้ความสำคัญมากที่สุดในชีวิต?",
     options: [
-      { icon: "💯", text: "คนที่ทุกคนพึ่งได้ ไม่มีทางแพ้", scores: { wolf: 3, rose: 1 } },
-      { icon: "🔮", text: "คนลึกลับ รู้เรื่องแปลกๆ เยอะ", scores: { wizard: 3, princess: 1 } },
-      { icon: "😂", text: "ตลก ฮา ไปที่ไหนก็สนุก", scores: { fox: 3, rose: 1 } },
-      { icon: "💕", text: "อ่อนโยน ทุกคนอยากอยู่ใกล้", scores: { princess: 3, rose: 1 } }
+      { icon: "🏅", text: "ความสำเร็จและการพิสูจน์ตัวเอง", scores: { chowon: 3, mingming: 2 } },
+      { icon: "💅", text: "ภาพลักษณ์และการได้รับการยอมรับ", scores: { mingming: 3 } },
+      { icon: "👨‍👩‍👧", text: "ครอบครัวและคนที่แกรัก", scores: { lina: 2, bigbo: 2 } },
+      { icon: "🐶", text: "สัตว์และสิ่งมีชีวิตที่ไม่สามารถช่วยตัวเองได้", scores: { bigbo: 3 } },
+      { icon: "☮️", text: "ความสงบและการมีชีวิตปกติโดยไม่มีสิ่งรบกวน", scores: { maki: 3, lina: 1 } },
+      { icon: "❤️", text: "ความสัมพันธ์และประสบการณ์ที่ทำให้ชีวิตสนุก", scores: { rough: 3, chowon: 1 } }
     ]
   },
   {
-    icon: "🏆",
-    text: "ในเกม คุณเล่นเพื่ออะไรมากที่สุด?",
+    icon: "😔",
+    sub: "ด้านที่คนไม่ค่อยรู้",
+    text: "ถ้าแกมีด้านที่ซ่อนอยู่ มันคืออะไร?",
     options: [
-      { icon: "🥇", text: "ต้องอันดับ 1 เท่านั้น", scores: { wolf: 3, fox: 1 } },
-      { icon: "🗺️", text: "อยากรู้ว่าด่านต่อไปมีอะไร", scores: { wizard: 3, princess: 1 } },
-      { icon: "👗", text: "สะสม Costume ให้ครบทุกชุด", scores: { rose: 3, princess: 1 } },
-      { icon: "😆", text: "เล่นกับเพื่อนแล้วฮากัน", scores: { fox: 3, rose: 1 } }
+      { icon: "🫀", text: "จริงๆ แล้วแกสนใจคนอื่นมากกว่าที่แสดงออก แค่ไม่รู้จะพูดยังไง", scores: { chowon: 2, mingming: 2 } },
+      { icon: "🥺", text: "ข้างในแกอยากให้คนรักและยอมรับแก มากกว่าที่ยอมรับ", scores: { mingming: 3, maki: 1 } },
+      { icon: "💧", text: "แกแบกรับความกดดันไว้คนเดียวนานมากแล้ว แต่ไม่เคยบอกใคร", scores: { lina: 3 } },
+      { icon: "🌻", text: "ข้างในแกอ่อนโยนมาก แต่คนมักตัดสินจากรูปลักษณ์ภายนอก", scores: { bigbo: 3 } },
+      { icon: "🌑", text: "แกเคยโดดเดี่ยวมานานมาก และยังรู้สึกเจ็บปวดอยู่ข้างใน", scores: { maki: 3 } },
+      { icon: "💔", text: "แกกลัวสูญเสียสิ่งที่รักอีกครั้ง เลยพยายามทำให้ทุกอย่างสนุกตลอด", scores: { rough: 3 } }
     ]
   },
   {
-    icon: "✨",
-    text: "ประโยคไหนที่คุณพูดบ่อยที่สุดตอนเล่นเกม?",
+    icon: "🎮",
+    sub: "สไตล์การเล่นเกม",
+    text: "ถ้าเล่น Tales Runner สไตล์ของแกเป็นแบบไหน?",
     options: [
-      { icon: "😤", text: '"ไม่ยอมแพ้ ลองอีกรอบ!"', scores: { wolf: 3, rose: 1 } },
-      { icon: "🤔", text: '"เดี๋ยวคิดก่อน มีทางแน่ๆ"', scores: { wizard: 3 } },
-      { icon: "😂", text: '"ฮ่าๆ ไม่เป็นไร ตายก็ตาย"', scores: { fox: 3, rose: 1 } },
-      { icon: "😍", text: '"ชุดนี้น่ารักมาก ต้องได้!"', scores: { princess: 3, rose: 2 } }
+      { icon: "🔥", text: "ฟุลสปีด วิ่งนำตลอด ชอบแข่งขันกับทุกคน", scores: { chowon: 3, rough: 1 } },
+      { icon: "💃", text: "ต้องดูดีด้วย เล่นเก่งด้วย ให้คนจำได้ว่าใครอยู่ห้องนี้", scores: { mingming: 3 } },
+      { icon: "🌸", text: "เล่นสบายๆ ระวังทุกก้าว แม่นยำกว่าเร็ว", scores: { lina: 3 } },
+      { icon: "🐘", text: "ชนเยอะ โดนชนก็ไม่เป็นไร power สูง ชนะด้วยพลัง", scores: { bigbo: 3 } },
+      { icon: "🎯", text: "precision สูง ชอบเส้นทางที่ต้องอาศัยความแม่นยำ", scores: { maki: 3, lina: 1 } },
+      { icon: "🔄", text: "วิ่งถอยหลัง! เซอร์ไพรส์ทุกคนด้วยสไตล์ที่ไม่เหมือนใคร", scores: { rough: 3 } }
+    ]
+  },
+  {
+    icon: "🌈",
+    sub: "คำถามสุดท้าย",
+    text: "ถ้ามีโอกาสได้ขอพร 1 ข้อ แกจะขออะไร?",
+    options: [
+      { icon: "👑", text: "เป็นที่สุดในสิ่งที่ทำ ไม่มีใครเก่งกว่า", scores: { chowon: 3, mingming: 1 } },
+      { icon: "💫", text: "ให้คนรู้จักและจดจำแกในแบบที่แกอยากเป็น", scores: { mingming: 3 } },
+      { icon: "🕊️", text: "ให้ชีวิตที่แกอยากมีได้จริงๆ สักที", scores: { lina: 3, maki: 1 } },
+      { icon: "🏥", text: "ให้คนที่แกรักมีสุขภาพดีและมีชีวิตที่ดี", scores: { bigbo: 3, lina: 1 } },
+      { icon: "🕯️", text: "ให้สิ่งที่ทำให้แกทุกข์ใจหายไปเสียที", scores: { maki: 3 } },
+      { icon: "🏍️", text: "ให้ได้กลับไปทำสิ่งที่แกรักโดยไม่มีความกลัว", scores: { rough: 3, chowon: 1 } }
     ]
   }
 ];
 
 const characters = {
-  wolf: {
-    emoji: "🐺",
-    name: "Wolf King",
-    role: "จอมพลแห่ง Fairy Tale Land",
-    desc: "แกคือคนที่เกิดมาเพื่อชนะ — ไม่ยอมแพ้ง่ายๆ มีความมุ่งมั่นสูง และทำให้คนรอบข้างรู้สึกปลอดภัย แต่ก็น่าเกรงขามในเวลาเดียวกัน ในเกมแกมักจะวิ่งนำตลอดและไม่ยอมให้ใครแซง",
+  chowon: {
+    emoji: "⚽",
+    dubbed: "The Athlete",
+    name: "Chowon",
+    role: "นักกีฬาและผู้นำแห่ง Tales Land",
+    color: "#FFD166",
+    grad: "linear-gradient(135deg, #FFD166, #F4A261)",
+    glow: "rgba(255,209,102,0.25)",
+    desc: "Chowon คือ Runner ต้นแบบ เขาเก่งทุกกีฬาที่สัมผัส เป็นผู้นำตามธรรมชาติที่คนแวดล้อมรักและเชื่อถือ ไม่มีจุดอ่อนชัดเจน และเข้าสู่ Tales Land เพราะแค่รัก ความท้าทาย — ไม่ต้องการอะไรเป็นพิเศษ นอกจากโอกาสที่จะแข่งขัน",
+    why: "แกมีนิสัยแบบ Chowon ชัดมาก ทั้งความมุ่งมั่น, ความเป็นผู้นำ, และการไม่ยอมแพ้ง่ายๆ แกไม่ต้องการแรงจูงใจพิเศษในการทำอะไร แค่มีความท้าทายก็พร้อมลุยแล้ว เหมือนกับที่ Chowon วิ่งเข้า Tales Land เพราะอยากวิ่ง ไม่ใช่เพราะขอพร",
     traits: [
-      { text: "มุ่งมั่น", bg: "#1A0A2E", color: "#C9922A", border: "#C9922A" },
-      { text: "เป็นผู้นำ", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" },
-      { text: "ไม่ยอมแพ้", bg: "#1A0A2E", color: "#C4566A", border: "#C4566A" }
+      { text: "ผู้นำโดยธรรมชาติ", color: "#FFD166", border: "#FFD166" },
+      { text: "มุ่งมั่นสูง", color: "#F4A261", border: "#F4A261" },
+      { text: "รักการแข่งขัน", color: "#FFD166", border: "#FFD166" }
     ],
-    style: "<strong>สไตล์ในเกม:</strong> Full Speed Rush — วิ่งตรงไม่หยุด เก็บ Boost ทุกอัน และกดดันคนหลังตลอดเวลา"
+    style: "🏃 สไตล์: Full-Speed Racer — วิ่งนำตลอด stats สมดุล เหมาะทุกแมพ ไม่มีจุดอ่อนชัดเจน"
   },
-  rose: {
-    emoji: "🌹",
-    name: "Red Rose",
-    role: "นักผจญภัยใจกล้าแห่งดงกุหลาบ",
-    desc: "แกมีพลังงานเยอะมาก ไปที่ไหนก็สร้างความสนุก ทุกคนชอบเล่นด้วย มีทั้งความกล้าและความอบอุ่นในเวลาเดียวกัน — ในเกมแกคือคนที่ดูแลเพื่อนในทีมและยังวิ่งเก่งด้วย",
+  mingming: {
+    emoji: "🎬",
+    dubbed: "The Movie Star",
+    name: "Ming Ming",
+    role: "ดาราเด็กผู้มีเสน่ห์แห่ง Tales Land",
+    color: "#EF8FAB",
+    grad: "linear-gradient(135deg, #EF8FAB, #C44A9A)",
+    glow: "rgba(239,143,171,0.25)",
+    desc: "Ming Ming เป็นนักแสดงเด็กมาตั้งแต่เกิด ชีวิตหรูหราทำให้เธอค่อนข้างโอ้อวดและเอาแต่ใจบ้าง แต่ข้างในลึกๆ เธอใส่ใจคนอื่นมากกว่าที่แสดงออก แค่ไม่รู้จะแสดงออกยังไง — โดยเฉพาะกับ Chowon ที่เธอชอบอยู่",
+    why: "แกมีบุคลิกแบบ Ming Ming อย่างเห็นได้ชัด ทั้งความต้องการการยอมรับ, ความภาคภูมิใจในตัวเอง, และนิสัยที่ดูแข็งแกร่งภายนอกแต่อ่อนไหวข้างใน บางทีแกอาจดูเย็นชาหรือเอาแต่ใจ แต่จริงๆ แกสนใจคนรอบข้างมากกว่าที่แสดงออก",
     traits: [
-      { text: "ใจกล้า", bg: "#1A0A2E", color: "#C4566A", border: "#C4566A" },
-      { text: "อบอุ่น", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" },
-      { text: "สนุกสนาน", bg: "#1A0A2E", color: "#C9922A", border: "#C9922A" }
+      { text: "มั่นใจในตัวเอง", color: "#EF8FAB", border: "#EF8FAB" },
+      { text: "ชอบการยอมรับ", color: "#C44A9A", border: "#C44A9A" },
+      { text: "ใจอ่อนข้างใน", color: "#EF8FAB", border: "#EF8FAB" }
     ],
-    style: "<strong>สไตล์ในเกม:</strong> All-rounder — เล่นได้ทุกสถานการณ์ ทั้งวิ่งเดี่ยวและช่วยทีม เก็บไอเทมช่วยเพื่อนเป็นประจำ"
+    style: "💃 สไตล์: Star Runner — วิ่งเก่งพอๆ กับ Chowon แต่ต้องดูดีด้วย Control สูงกว่า Power ต่ำกว่า"
   },
-  wizard: {
-    emoji: "🧙",
-    name: "Grand Wizard",
-    role: "จอมเวทย์ผู้รู้ทุกเส้นทาง",
-    desc: "แกคือคนที่มองเห็นอะไรที่คนอื่นมองไม่เห็น วางแผนเก่ง คิดก่อนลงมือเสมอ บางคนคิดว่าแกเงียบแต่จริงๆ แกกำลังวิเคราะห์ทุกอย่างอยู่ — ในเกมแกมักจะเลือกเส้นทางลัดที่คนอื่นไม่รู้จัก",
+  lina: {
+    emoji: "🩰",
+    dubbed: "The Ballerina",
+    name: "Lina",
+    role: "นักบัลเล่ต์ผู้แบกฝันของแม่ไว้บนบ่า",
+    color: "#B39DDB",
+    grad: "linear-gradient(135deg, #B39DDB, #7E57C2)",
+    glow: "rgba(179,157,219,0.25)",
+    desc: "Lina เรียนบัลเล่ต์มาตั้งแต่จำความได้ ไม่ใช่เพราะตัวเองอยากเป็น แต่เพื่อไม่ให้แม่ผิดหวัง เธอมีนิสัยอ่อนโยน ใจดี และใช้คำสุภาพกับทุกคนเสมอ แต่ข้างในเธอก็โหยหาชีวิตธรรมดาๆ ที่ไม่ต้องเป็นบัลเล่ต์ตลอดเวลา",
+    why: "นิสัยของแกใกล้เคียงกับ Lina มากที่สุด แกเป็นคนใจดี อดทน และมักทำอะไรเพื่อคนอื่นมากกว่าตัวเอง บางทีแกแบกรับสิ่งต่างๆ คนเดียวโดยไม่บอกใคร เหมือน Lina ที่ยิ้มให้โลกแต่ข้างในก็มีสิ่งที่อยากทำแต่ไม่ได้ทำ",
     traits: [
-      { text: "ฉลาด", bg: "#1A0A2E", color: "#6B3FA0", border: "#6B3FA0" },
-      { text: "วางแผนเก่ง", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" },
-      { text: "ลึกลับ", bg: "#1A0A2E", color: "#2A7F7F", border: "#2A7F7F" }
+      { text: "ใจดีและอ่อนโยน", color: "#B39DDB", border: "#B39DDB" },
+      { text: "อดทนสูง", color: "#7E57C2", border: "#7E57C2" },
+      { text: "ใส่ใจผู้อื่น", color: "#B39DDB", border: "#B39DDB" }
     ],
-    style: "<strong>สไตล์ในเกม:</strong> Route Master — จำทุก Shortcut ขึ้นใจ ไม่รีบ แต่มักจบด่านได้เร็วกว่าทุกคน"
+    style: "🌸 สไตล์: Precision Runner — ไม่เร็วที่สุดแต่แม่นยำ ทุกก้าวคือท่าบัลเล่ต์ Control สูง เหมาะแมพที่ต้องการความละเอียด"
   },
-  fox: {
-    emoji: "🦊",
-    name: "Fox Trickster",
-    role: "จิ้งจอกซนแห่ง Enchanted Forest",
-    desc: "แกคือคนที่ทำให้ทุกอย่างดูสนุก ปรับตัวเก่ง คิดเร็ว และมักจะมีไอเดียแปลกๆ ที่ได้ผลจริง ในเกมแกไม่ได้เล่นตามแผนใคร แต่มักออกอุบายเอาตัวรอดได้เสมอ",
+  bigbo: {
+    emoji: "🐾",
+    dubbed: "The Strong Man",
+    name: "Big Bo",
+    role: "ยักษ์ใจดีแห่ง Tales Land",
+    color: "#80CBC4",
+    grad: "linear-gradient(135deg, #80CBC4, #26A69A)",
+    glow: "rgba(128,203,196,0.25)",
+    desc: "Big Bo มีร่างกายใหญ่โตจนคนมักเข้าใจผิดและกลัวเขามาตั้งแต่เด็ก ทำให้เขาเติบโตมาโดดเดี่ยวและใกล้ชิดกับสัตว์มากกว่าคน เขาเข้าสู่ Tales Land เพื่อหายาให้นกแก้วสัตว์เลี้ยงที่ป่วย — ความรักที่เขามีต่อสิ่งมีชีวิตตัวเล็กๆ ยิ่งใหญ่กว่าร่างกายเขาเสียอีก",
+    why: "แกมีใจที่อ่อนโยนแบบ Big Bo คนอาจมองแกเป็นอย่างหนึ่ง แต่คนที่รู้จักแกดีรู้ว่าแกใจดีมาก แกพร้อมทำทุกอย่างเพื่อคนที่รัก และมักไม่ได้ต้องการอะไรเพื่อตัวเองมากนัก เหมือน Big Bo ที่พลังมหาศาลแต่ใช้มันเพื่อช่วยเหลือ ไม่ใช่ข่มขู่",
     traits: [
-      { text: "ปรับตัวเก่ง", bg: "#1A0A2E", color: "#C9922A", border: "#C9922A" },
-      { text: "ฉลาดแกมโกง", bg: "#1A0A2E", color: "#3A7D44", border: "#3A7D44" },
-      { text: "ขี้เล่น", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" }
+      { text: "ใจดีที่สุดในห้อง", color: "#80CBC4", border: "#80CBC4" },
+      { text: "รักสัตว์มาก", color: "#26A69A", border: "#26A69A" },
+      { text: "พลังมหาศาล", color: "#80CBC4", border: "#80CBC4" }
     ],
-    style: "<strong>สไตล์ในเกม:</strong> Chaos Agent — ไม่มีแพทเทิร์น เล่นสุ่ม แต่อ่านทางเก่งมาก และมักจะเซอร์ไพรส์ทุกคนตอนจบด่าน"
+    style: "🐘 สไตล์: Power Rusher — Power สูงสุดในเกม ชนคนออกได้แรงมาก แต่ Control ต่ำ เปลี่ยนทิศทางยาก"
   },
-  princess: {
-    emoji: "🌙",
-    name: "Moon Princess",
-    role: "เจ้าหญิงแห่งดวงจันทร์และดวงดาว",
-    desc: "แกมีเสน่ห์ลึกๆ ที่คนรอบข้างรู้สึกได้โดยไม่ต้องอธิบาย ใจเย็น มองเห็นความสวยงามในทุกอย่าง และมักทำสิ่งที่คนอื่นคาดไม่ถึง — ในเกมแกอาจไม่ได้อันดับ 1 แต่ Costume แกสวยที่สุดในห้องเสมอ",
+  maki: {
+    emoji: "👻",
+    dubbed: "The Possessed",
+    name: "Maki",
+    role: "สาวลึกลับผู้มองเห็นสิ่งที่คนอื่นมองไม่เห็น",
+    color: "#CE93D8",
+    grad: "linear-gradient(135deg, #CE93D8, #7B1FA2)",
+    glow: "rgba(206,147,216,0.25)",
+    desc: "Maki มีพลังมองเห็นผีมาตั้งแต่เด็ก ทำให้เธอถูกกีดกัน ถูกเรียกว่าแม่มด และอยู่อย่างโดดเดี่ยวมาตลอด เธอดูเย็นชาและไม่แสดงอารมณ์ แต่ลึกๆ แล้วเธอแค่อยากมีเพื่อนและใช้ชีวิตปกติ เธอเข้าร่วม Tales Runner เพื่อหวังใช้ Wish Stone ไล่ผีออกไปจากชีวิตสักที",
+    why: "แกมีบางอย่างที่คล้าย Maki มาก แกอาจเคยรู้สึกโดดเดี่ยว ถูกเข้าใจผิด หรือมีด้านที่ไม่อยากให้ใครรู้ แกอาจดูเงียบหรือเย็นชา แต่ข้างในแกมีความต้องการการยอมรับและความสัมพันธ์ที่แท้จริงมากกว่าที่แสดงออก",
     traits: [
-      { text: "ลึกลับ", bg: "#1A0A2E", color: "#6B3FA0", border: "#6B3FA0" },
-      { text: "ใจเย็น", bg: "#1A0A2E", color: "#2A7F7F", border: "#2A7F7F" },
-      { text: "มีเสน่ห์", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" }
+      { text: "เงียบและลึกลับ", color: "#CE93D8", border: "#CE93D8" },
+      { text: "แข็งแกร่งข้างใน", color: "#7B1FA2", border: "#7B1FA2" },
+      { text: "อยากมีชีวิตปกติ", color: "#CE93D8", border: "#CE93D8" }
     ],
-    style: "<strong>สไตล์ในเกม:</strong> Aesthetic Runner — เน้นสะสม Costume และ Accessory เป็นหลัก วิ่งสวยกว่าใคร แม้จะไม่ได้เร็วที่สุด"
+    style: "🎯 สไตล์: Precision Ghost — Acceleration และ Control สูง เหมาะแมพที่ต้องกระโดดแม่นๆ แต่ Power ต่ำมาก ระวังถูกชน"
+  },
+  rough: {
+    emoji: "🏍️",
+    dubbed: "The Hurricane",
+    name: "Rough",
+    role: "เด็กหนุ่มบิ๊กไบค์ผู้วิ่งถอยหลังสู้ชีวิต",
+    color: "#FFB74D",
+    grad: "linear-gradient(135deg, #FFB74D, #E65100)",
+    glow: "rgba(255,183,77,0.25)",
+    desc: "Rough เป็นนักขี่มอเตอร์ไซค์ระดับโลก จนวันหนึ่งเขาหักพวงมาลัยหลบแมวแล้วเกิดอุบัติเหตุ ระบบประสาทเสียหายจนเขาทำทุกอย่างถอยหลัง ดูตลกแต่มันคือโศกนาฏกรรม เขาต้องเลี้ยงแม่ที่ป่วยคนเดียว และฝันอยากขี่มอเตอร์ไซค์โดยไม่กลัวอีกครั้ง",
+    why: "แกมีพลังแบบ Rough ที่ไม่ว่าจะเจออะไรก็ยังยิ้มสู้ต่อไป แกอาจเคยผ่านอะไรที่ยากมาแต่ก็ยังทำให้คนรอบข้างหัวเราะได้ แกมีความยืดหยุ่นสูง ปรับตัวเก่ง และรู้ว่าบางทีการขำก่อนแล้วค่อยสู้ก็เป็นวิธีที่ดีที่สุด เหมือน Rough ที่วิ่งถอยหลังแต่ก็ยังสู้",
+    traits: [
+      { text: "สนุกและเป็นมิตร", color: "#FFB74D", border: "#FFB74D" },
+      { text: "ยืดหยุ่นสูง", color: "#E65100", border: "#E65100" },
+      { text: "ไม่ยอมแพ้ชีวิต", color: "#FFB74D", border: "#FFB74D" }
+    ],
+    style: "🔄 สไตล์: Backwards Hurricane — วิ่งถอยหลังทุกอย่าง! Power สูง Speed ปานกลาง แต่ Control ต่ำ เอกลักษณ์ที่สุดในเกม"
   }
 };
 
-let scores = { wolf: 0, rose: 0, wizard: 0, fox: 0, princess: 0 };
+let scores = {};
 let current = 0;
 
 function makeStars() {
-  const container = document.getElementById('stars');
-  for (let i = 0; i < 60; i++) {
+  const c = document.getElementById('stars');
+  for (let i = 0; i < 70; i++) {
     const s = document.createElement('div');
     s.className = 'star';
-    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;`;
-    container.appendChild(s);
+    const sz = 1 + Math.random() * 2;
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${2+Math.random()*5}s;--op:${0.3+Math.random()*0.6};animation-delay:${Math.random()*6}s;`;
+    c.appendChild(s);
   }
 }
 
@@ -638,7 +843,7 @@ function showScreen(id) {
 }
 
 function startQuiz() {
-  scores = { wolf: 0, rose: 0, wizard: 0, fox: 0, princess: 0 };
+  scores = { chowon: 0, mingming: 0, lina: 0, bigbo: 0, maki: 0, rough: 0 };
   current = 0;
   showScreen('screen-quiz');
   renderQuestion();
@@ -647,15 +852,18 @@ function startQuiz() {
 function renderQuestion() {
   const q = questions[current];
   document.getElementById('q-num').textContent = `คำถาม ${current + 1} / ${questions.length}`;
+  document.getElementById('q-pct').textContent = `${Math.round((current / questions.length) * 100)}%`;
   document.getElementById('q-icon').textContent = q.icon;
+  document.getElementById('q-sub').textContent = q.sub;
   document.getElementById('q-text').textContent = q.text;
   document.getElementById('progress').style.width = `${(current / questions.length) * 100}%`;
+
   const optContainer = document.getElementById('options');
   optContainer.innerHTML = '';
-  q.options.forEach((opt, i) => {
+  q.options.forEach(opt => {
     const btn = document.createElement('button');
     btn.className = 'opt-btn';
-    btn.innerHTML = `<span class="opt-icon">${opt.icon}</span><span>${opt.text}</span>`;
+    btn.innerHTML = `<span class="opt-icon">${opt.icon}</span><span class="opt-text">${opt.text}</span>`;
     btn.onclick = () => selectOption(opt, btn);
     optContainer.appendChild(btn);
   });
@@ -664,41 +872,67 @@ function renderQuestion() {
 function selectOption(opt, btn) {
   document.querySelectorAll('.opt-btn').forEach(b => b.style.pointerEvents = 'none');
   btn.classList.add('selected');
-  for (const [char, val] of Object.entries(opt.scores)) scores[char] += val;
+  for (const [char, val] of Object.entries(opt.scores)) {
+    if (scores[char] !== undefined) scores[char] += val;
+  }
   setTimeout(() => {
     current++;
-    if (current < questions.length) { renderQuestion(); }
-    else { showResult(); }
-  }, 400);
+    if (current < questions.length) renderQuestion();
+    else showResult();
+  }, 380);
 }
 
 function showResult() {
   const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
   const c = characters[winner];
+
   document.getElementById('r-emoji').textContent = c.emoji;
+  document.getElementById('r-dubbed').textContent = `"${c.dubbed}"`;
   document.getElementById('r-name').textContent = c.name;
   document.getElementById('r-role').textContent = c.role;
   document.getElementById('r-desc').textContent = c.desc;
-  document.getElementById('r-style').innerHTML = c.style;
+  document.getElementById('r-why').textContent = c.why;
+
+  // Apply character color theme
+  document.getElementById('r-name').style.background = c.grad;
+  document.getElementById('r-name').style.webkitBackgroundClip = 'text';
+  document.getElementById('r-name').style.webkitTextFillColor = 'transparent';
+  document.getElementById('r-name').style.backgroundClip = 'text';
+  document.getElementById('r-divider').style.background = c.grad;
+  document.getElementById('r-glow').style.background = c.glow;
+  document.getElementById('r-border').style.background = c.grad;
+  document.getElementById('r-why-title').style.color = c.color;
+  document.documentElement.style.setProperty('--char-color', c.color);
+  document.documentElement.style.setProperty('--char-grad', c.grad);
+
+  const emoji = document.getElementById('r-emoji');
+  emoji.style.filter = `drop-shadow(0 0 30px ${c.glow})`;
+
   const traitsEl = document.getElementById('r-traits');
   traitsEl.innerHTML = '';
   c.traits.forEach(t => {
     const pill = document.createElement('span');
     pill.className = 'trait-pill';
     pill.textContent = t.text;
-    pill.style.cssText = `background:${t.bg};color:${t.color};border-color:${t.border};`;
+    pill.style.cssText = `background:rgba(0,0,0,0.3);color:${t.color};border-color:${t.border};`;
     traitsEl.appendChild(pill);
   });
+
+  document.getElementById('r-style').innerHTML = `<span class="ps-icon">🎮</span><span>${c.style}</span>`;
   document.getElementById('progress').style.width = '100%';
+  document.getElementById('q-pct').textContent = '100%';
+
   showScreen('screen-result');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function shareResult() {
   const name = document.getElementById('r-name').textContent;
   const emoji = document.getElementById('r-emoji').textContent;
-  const text = `${emoji} ฉันคือ "${name}" ใน Tales Runner!\n\nลองดูว่าแกเป็นตัวละครไหนได้เลย 🎮\n#TalesRunner #WhichCharacterAreYou`;
+  const dubbed = document.getElementById('r-dubbed').textContent;
+  const text = `${emoji} ฉันคือ ${name} ${dubbed} ใน Tales Runner!\n\nลองดูว่าแกเป็นตัวละครไหน? 🎮✨\n#TalesRunner #TalesRunnerQuiz`;
   if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => showToast());
+    navigator.clipboard.writeText(text).then(showToast).catch(showToast);
   } else {
     showToast();
   }
