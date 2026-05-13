@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Which Tales Runner Character Are You?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FDF6E3;
+    --dark: #1A0A2E;
+    --gold: #C9922A;
+    --gold-light: #F0C96A;
+    --rose: #C4566A;
+    --teal: #2A7F7F;
+    --purple: #6B3FA0;
+    --leaf: #3A7D44;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    font-family: 'Sarabun', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(107,63,160,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(196,86,106,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(42,127,127,0.1) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .stars {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--gold-light);
+    border-radius: 50%;
+    animation: twinkle var(--d) ease-in-out infinite;
+    opacity: 0;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; transform: scale(1); }
+    50% { opacity: 0.8; transform: scale(1.5); }
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 560px;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .screen { display: none; animation: fadeUp 0.5s ease forwards; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== INTRO ===== */
+  .intro-card {
+    background: rgba(253,246,227,0.05);
+    border: 1px solid rgba(201,146,42,0.3);
+    border-radius: 20px;
+    padding: 40px 32px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .crown {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 16px;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .intro-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .intro-heading {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    color: var(--cream);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .intro-sub {
+    font-size: 14px;
+    color: rgba(253,246,227,0.55);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .chars-preview {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+
+  .char-chip {
+    background: rgba(201,146,42,0.12);
+    border: 1px solid rgba(201,146,42,0.25);
+    border-radius: 99px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--gold-light);
+  }
+
+  .btn-start {
+    background: linear-gradient(135deg, var(--gold), #A0721A);
+    color: var(--dark);
+    border: none;
+    border-radius: 99px;
+    padding: 14px 40px;
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(201,146,42,0.4);
+    letter-spacing: 0.05em;
+  }
+
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,146,42,0.5); }
+  .btn-start:active { transform: translateY(0); }
+
+  /* ===== QUIZ ===== */
+  .progress-bar {
+    height: 3px;
+    background: rgba(201,146,42,0.2);
+    border-radius: 99px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  .q-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .q-num {
+    font-size: 12px;
+    color: var(--gold);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.1em;
+  }
+
+  .q-icon { font-size: 22px; }
+
+  .q-card {
+    background: rgba(253,246,227,0.05);
+    border: 1px solid rgba(201,146,42,0.2);
+    border-radius: 16px;
+    padding: 28px 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .q-text {
+    font-size: 18px;
+    color: var(--cream);
+    font-weight: 600;
+    margin-bottom: 24px;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 10px; }
+
+  .opt-btn {
+    background: rgba(253,246,227,0.04);
+    border: 1px solid rgba(253,246,227,0.12);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: left;
+    color: rgba(253,246,227,0.85);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .opt-btn:hover {
+    background: rgba(201,146,42,0.12);
+    border-color: rgba(201,146,42,0.4);
+    color: var(--cream);
+    transform: translateX(4px);
+  }
+
+  .opt-btn.selected {
+    background: rgba(201,146,42,0.2);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .opt-icon { font-size: 18px; flex-shrink: 0; }
+
+  /* ===== RESULT ===== */
+  .result-card {
+    background: rgba(253,246,227,0.05);
+    border-radius: 20px;
+    padding: 36px 28px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--gold), transparent, var(--rose));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  .result-emoji {
+    font-size: 72px;
+    display: block;
+    margin-bottom: 12px;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+
+  @keyframes popIn {
+    from { transform: scale(0.3); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .result-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .result-name {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    color: var(--cream);
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+
+  .result-role {
+    font-size: 13px;
+    color: var(--gold-light);
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  .result-divider {
+    width: 40px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 0 auto 16px;
+  }
+
+  .result-desc {
+    font-size: 14px;
+    color: rgba(253,246,227,0.7);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .result-traits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+
+  .trait-pill {
+    padding: 5px 14px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+
+  .style-row {
+    background: rgba(201,146,42,0.08);
+    border: 1px solid rgba(201,146,42,0.2);
+    border-radius: 12px;
+    padding: 14px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: rgba(253,246,227,0.75);
+    line-height: 1.6;
+  }
+
+  .style-row strong {
+    color: var(--gold-light);
+    font-weight: 600;
+  }
+
+  .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+  .btn-share {
+    background: linear-gradient(135deg, var(--rose), #A03050);
+    color: white;
+    border: none;
+    border-radius: 99px;
+    padding: 12px 28px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 16px rgba(196,86,106,0.4);
+  }
+
+  .btn-share:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,86,106,0.5); }
+
+  .btn-retry {
+    background: transparent;
+    color: rgba(253,246,227,0.6);
+    border: 1px solid rgba(253,246,227,0.2);
+    border-radius: 99px;
+    padding: 12px 28px;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-retry:hover { border-color: rgba(253,246,227,0.5); color: var(--cream); }
+
+  .share-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--dark);
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    padding: 12px 24px;
+    border-radius: 99px;
+    font-size: 13px;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .share-toast.show { transform: translateX(-50%) translateY(0); }
+
+  .download-hint {
+    margin-top: 20px;
+    padding: 14px 16px;
+    background: rgba(42,127,127,0.12);
+    border: 1px solid rgba(42,127,127,0.3);
+    border-radius: 12px;
+    font-size: 13px;
+    color: rgba(253,246,227,0.65);
+    line-height: 1.6;
+  }
+
+  .download-hint a {
+    color: #5BC8C8;
+    text-decoration: none;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="wrap">
+
+  <!-- INTRO -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-card">
+      <span class="crown">👑</span>
+      <p class="intro-title">Tales Runner Quiz</p>
+      <h1 class="intro-heading">คุณคือตัวละครไหน<br>ใน Fairy Tale Land?</h1>
+      <p class="intro-sub">ตอบ 7 คำถาม แล้วค้นพบว่า<br>นิสัยแกตรงกับใครในเกมมากที่สุด</p>
+      <div class="chars-preview">
+        <span class="char-chip">🐺 Wolf King</span>
+        <span class="char-chip">🌹 Red Rose</span>
+        <span class="char-chip">🧙 Wizard</span>
+        <span class="char-chip">🦊 Fox Trickster</span>
+        <span class="char-chip">🌙 Moon Princess</span>
+      </div>
+      <button class="btn-start" onclick="startQuiz()">เริ่มเลย ✨</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+    <div class="q-header">
+      <span class="q-num" id="q-num">คำถาม 1 / 7</span>
+      <span class="q-icon" id="q-icon">🌟</span>
+    </div>
+    <div class="q-card">
+      <p class="q-text" id="q-text"></p>
+      <div class="options" id="options"></div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="screen-result">
+    <div class="result-card">
+      <span class="result-emoji" id="r-emoji"></span>
+      <p class="result-label">คุณคือ</p>
+      <h2 class="result-name" id="r-name"></h2>
+      <p class="result-role" id="r-role"></p>
+      <div class="result-divider"></div>
+      <p class="result-desc" id="r-desc"></p>
+      <div class="result-traits" id="r-traits"></div>
+      <div class="style-row" id="r-style"></div>
+      <div class="btn-row">
+        <button class="btn-share" onclick="shareResult()">📤 แชร์ผลลัพธ์</button>
+        <button class="btn-retry" onclick="retryQuiz()">ลองใหม่</button>
+      </div>
+      <div class="download-hint">
+        🎮 อยากเล่นเป็นตัวละครนี้จริงๆ? <a href="#">ดาวน์โหลด Tales Runner ฟรี</a> แล้วรับ Starter Pack พิเศษสำหรับตัวละครของคุณ!
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="share-toast" id="toast">✅ คัดลอกข้อความแล้ว! นำไปแชร์ได้เลย</div>
+
+<script>
+const questions = [
+  {
+    icon: "🌙",
+    text: "ตอนเจอด่านที่ยากมาก คุณทำยังไง?",
+    options: [
+      { icon: "💪", text: "돌진! วิ่งเข้าไปเลยดีกว่า", scores: { wolf: 3, fox: 1 } },
+      { icon: "🔍", text: "ดูก่อน วางแผนทีละขั้น", scores: { wizard: 3, princess: 1 } },
+      { icon: "😄", text: "ขำไปก่อน แล้วค่อยลอง", scores: { fox: 3, rose: 1 } },
+      { icon: "🤝", text: "ชวนเพื่อนมาช่วยกัน", scores: { rose: 3, princess: 2 } }
+    ]
+  },
+  {
+    icon: "🏰",
+    text: "ถ้าอยู่ใน Fairy Tale Land จริงๆ คุณอยากเป็นใคร?",
+    options: [
+      { icon: "👑", text: "เจ้าแห่งป่า ทุกคนต้องเกรงใจ", scores: { wolf: 3, fox: 1 } },
+      { icon: "🧙", text: "จอมเวทย์ที่รู้ความลับทุกอย่าง", scores: { wizard: 3 } },
+      { icon: "🌹", text: "นักผจญภัยใจกล้าที่ทุกคนรัก", scores: { rose: 3, fox: 1 } },
+      { icon: "🌙", text: "เจ้าหญิงลึกลับที่ไม่มีใครเข้าใจ", scores: { princess: 3, wizard: 1 } }
+    ]
+  },
+  {
+    icon: "⚡",
+    text: "สไตล์การวิ่งของคุณในเกมเป็นแบบไหน?",
+    options: [
+      { icon: "🔥", text: "ฟุลสปีด กดไปเรื่อยๆ ไม่หยุด", scores: { wolf: 3, rose: 1 } },
+      { icon: "🧠", text: "คิดก่อนกด เลือกเส้นทางที่ดีที่สุด", scores: { wizard: 3, princess: 1 } },
+      { icon: "🎭", text: "อ่านทางเก่ง ตัดสินใจเร็วมาก", scores: { fox: 3, wolf: 1 } },
+      { icon: "🌊", text: "สบายๆ ค่อยๆ ไป เน้นเก็บไอเทม", scores: { princess: 3, rose: 1 } }
+    ]
+  },
+  {
+    icon: "🎨",
+    text: "ถ้าต้องเลือก Costume คุณจะเลือกสไตล์ไหน?",
+    options: [
+      { icon: "🖤", text: "ดำ, เทา, ดุดัน ดูน่ากลัวนิดๆ", scores: { wolf: 3 } },
+      { icon: "✨", text: "เลื่อมๆ มีประกาย ดูพิเศษ", scores: { wizard: 2, princess: 2 } },
+      { icon: "❤️", text: "สีสด สะดุดตา ดูสนุก", scores: { rose: 3, fox: 1 } },
+      { icon: "🌿", text: "ธรรมชาติ เรียบง่าย แต่มีเสน่ห์", scores: { fox: 3, princess: 1 } }
+    ]
+  },
+  {
+    icon: "🌟",
+    text: "เพื่อนรู้จักคุณในแบบไหน?",
+    options: [
+      { icon: "💯", text: "คนที่ทุกคนพึ่งได้ ไม่มีทางแพ้", scores: { wolf: 3, rose: 1 } },
+      { icon: "🔮", text: "คนลึกลับ รู้เรื่องแปลกๆ เยอะ", scores: { wizard: 3, princess: 1 } },
+      { icon: "😂", text: "ตลก ฮา ไปที่ไหนก็สนุก", scores: { fox: 3, rose: 1 } },
+      { icon: "💕", text: "อ่อนโยน ทุกคนอยากอยู่ใกล้", scores: { princess: 3, rose: 1 } }
+    ]
+  },
+  {
+    icon: "🏆",
+    text: "ในเกม คุณเล่นเพื่ออะไรมากที่สุด?",
+    options: [
+      { icon: "🥇", text: "ต้องอันดับ 1 เท่านั้น", scores: { wolf: 3, fox: 1 } },
+      { icon: "🗺️", text: "อยากรู้ว่าด่านต่อไปมีอะไร", scores: { wizard: 3, princess: 1 } },
+      { icon: "👗", text: "สะสม Costume ให้ครบทุกชุด", scores: { rose: 3, princess: 1 } },
+      { icon: "😆", text: "เล่นกับเพื่อนแล้วฮากัน", scores: { fox: 3, rose: 1 } }
+    ]
+  },
+  {
+    icon: "✨",
+    text: "ประโยคไหนที่คุณพูดบ่อยที่สุดตอนเล่นเกม?",
+    options: [
+      { icon: "😤", text: '"ไม่ยอมแพ้ ลองอีกรอบ!"', scores: { wolf: 3, rose: 1 } },
+      { icon: "🤔", text: '"เดี๋ยวคิดก่อน มีทางแน่ๆ"', scores: { wizard: 3 } },
+      { icon: "😂", text: '"ฮ่าๆ ไม่เป็นไร ตายก็ตาย"', scores: { fox: 3, rose: 1 } },
+      { icon: "😍", text: '"ชุดนี้น่ารักมาก ต้องได้!"', scores: { princess: 3, rose: 2 } }
+    ]
+  }
+];
+
+const characters = {
+  wolf: {
+    emoji: "🐺",
+    name: "Wolf King",
+    role: "จอมพลแห่ง Fairy Tale Land",
+    desc: "แกคือคนที่เกิดมาเพื่อชนะ — ไม่ยอมแพ้ง่ายๆ มีความมุ่งมั่นสูง และทำให้คนรอบข้างรู้สึกปลอดภัย แต่ก็น่าเกรงขามในเวลาเดียวกัน ในเกมแกมักจะวิ่งนำตลอดและไม่ยอมให้ใครแซง",
+    traits: [
+      { text: "มุ่งมั่น", bg: "#1A0A2E", color: "#C9922A", border: "#C9922A" },
+      { text: "เป็นผู้นำ", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" },
+      { text: "ไม่ยอมแพ้", bg: "#1A0A2E", color: "#C4566A", border: "#C4566A" }
+    ],
+    style: "<strong>สไตล์ในเกม:</strong> Full Speed Rush — วิ่งตรงไม่หยุด เก็บ Boost ทุกอัน และกดดันคนหลังตลอดเวลา"
+  },
+  rose: {
+    emoji: "🌹",
+    name: "Red Rose",
+    role: "นักผจญภัยใจกล้าแห่งดงกุหลาบ",
+    desc: "แกมีพลังงานเยอะมาก ไปที่ไหนก็สร้างความสนุก ทุกคนชอบเล่นด้วย มีทั้งความกล้าและความอบอุ่นในเวลาเดียวกัน — ในเกมแกคือคนที่ดูแลเพื่อนในทีมและยังวิ่งเก่งด้วย",
+    traits: [
+      { text: "ใจกล้า", bg: "#1A0A2E", color: "#C4566A", border: "#C4566A" },
+      { text: "อบอุ่น", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" },
+      { text: "สนุกสนาน", bg: "#1A0A2E", color: "#C9922A", border: "#C9922A" }
+    ],
+    style: "<strong>สไตล์ในเกม:</strong> All-rounder — เล่นได้ทุกสถานการณ์ ทั้งวิ่งเดี่ยวและช่วยทีม เก็บไอเทมช่วยเพื่อนเป็นประจำ"
+  },
+  wizard: {
+    emoji: "🧙",
+    name: "Grand Wizard",
+    role: "จอมเวทย์ผู้รู้ทุกเส้นทาง",
+    desc: "แกคือคนที่มองเห็นอะไรที่คนอื่นมองไม่เห็น วางแผนเก่ง คิดก่อนลงมือเสมอ บางคนคิดว่าแกเงียบแต่จริงๆ แกกำลังวิเคราะห์ทุกอย่างอยู่ — ในเกมแกมักจะเลือกเส้นทางลัดที่คนอื่นไม่รู้จัก",
+    traits: [
+      { text: "ฉลาด", bg: "#1A0A2E", color: "#6B3FA0", border: "#6B3FA0" },
+      { text: "วางแผนเก่ง", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" },
+      { text: "ลึกลับ", bg: "#1A0A2E", color: "#2A7F7F", border: "#2A7F7F" }
+    ],
+    style: "<strong>สไตล์ในเกม:</strong> Route Master — จำทุก Shortcut ขึ้นใจ ไม่รีบ แต่มักจบด่านได้เร็วกว่าทุกคน"
+  },
+  fox: {
+    emoji: "🦊",
+    name: "Fox Trickster",
+    role: "จิ้งจอกซนแห่ง Enchanted Forest",
+    desc: "แกคือคนที่ทำให้ทุกอย่างดูสนุก ปรับตัวเก่ง คิดเร็ว และมักจะมีไอเดียแปลกๆ ที่ได้ผลจริง ในเกมแกไม่ได้เล่นตามแผนใคร แต่มักออกอุบายเอาตัวรอดได้เสมอ",
+    traits: [
+      { text: "ปรับตัวเก่ง", bg: "#1A0A2E", color: "#C9922A", border: "#C9922A" },
+      { text: "ฉลาดแกมโกง", bg: "#1A0A2E", color: "#3A7D44", border: "#3A7D44" },
+      { text: "ขี้เล่น", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" }
+    ],
+    style: "<strong>สไตล์ในเกม:</strong> Chaos Agent — ไม่มีแพทเทิร์น เล่นสุ่ม แต่อ่านทางเก่งมาก และมักจะเซอร์ไพรส์ทุกคนตอนจบด่าน"
+  },
+  princess: {
+    emoji: "🌙",
+    name: "Moon Princess",
+    role: "เจ้าหญิงแห่งดวงจันทร์และดวงดาว",
+    desc: "แกมีเสน่ห์ลึกๆ ที่คนรอบข้างรู้สึกได้โดยไม่ต้องอธิบาย ใจเย็น มองเห็นความสวยงามในทุกอย่าง และมักทำสิ่งที่คนอื่นคาดไม่ถึง — ในเกมแกอาจไม่ได้อันดับ 1 แต่ Costume แกสวยที่สุดในห้องเสมอ",
+    traits: [
+      { text: "ลึกลับ", bg: "#1A0A2E", color: "#6B3FA0", border: "#6B3FA0" },
+      { text: "ใจเย็น", bg: "#1A0A2E", color: "#2A7F7F", border: "#2A7F7F" },
+      { text: "มีเสน่ห์", bg: "#1A0A2E", color: "#F0C96A", border: "#F0C96A" }
+    ],
+    style: "<strong>สไตล์ในเกม:</strong> Aesthetic Runner — เน้นสะสม Costume และ Accessory เป็นหลัก วิ่งสวยกว่าใคร แม้จะไม่ได้เร็วที่สุด"
+  }
+};
+
+let scores = { wolf: 0, rose: 0, wizard: 0, fox: 0, princess: 0 };
+let current = 0;
+
+function makeStars() {
+  const container = document.getElementById('stars');
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*5}s;width:${1+Math.random()*2}px;height:${1+Math.random()*2}px;`;
+    container.appendChild(s);
+  }
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => { s.classList.remove('active'); s.style.display = 'none'; });
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  void el.offsetWidth;
+  el.classList.add('active');
+}
+
+function startQuiz() {
+  scores = { wolf: 0, rose: 0, wizard: 0, fox: 0, princess: 0 };
+  current = 0;
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('q-num').textContent = `คำถาม ${current + 1} / ${questions.length}`;
+  document.getElementById('q-icon').textContent = q.icon;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress').style.width = `${(current / questions.length) * 100}%`;
+  const optContainer = document.getElementById('options');
+  optContainer.innerHTML = '';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-icon">${opt.icon}</span><span>${opt.text}</span>`;
+    btn.onclick = () => selectOption(opt, btn);
+    optContainer.appendChild(btn);
+  });
+}
+
+function selectOption(opt, btn) {
+  document.querySelectorAll('.opt-btn').forEach(b => b.style.pointerEvents = 'none');
+  btn.classList.add('selected');
+  for (const [char, val] of Object.entries(opt.scores)) scores[char] += val;
+  setTimeout(() => {
+    current++;
+    if (current < questions.length) { renderQuestion(); }
+    else { showResult(); }
+  }, 400);
+}
+
+function showResult() {
+  const winner = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  const c = characters[winner];
+  document.getElementById('r-emoji').textContent = c.emoji;
+  document.getElementById('r-name').textContent = c.name;
+  document.getElementById('r-role').textContent = c.role;
+  document.getElementById('r-desc').textContent = c.desc;
+  document.getElementById('r-style').innerHTML = c.style;
+  const traitsEl = document.getElementById('r-traits');
+  traitsEl.innerHTML = '';
+  c.traits.forEach(t => {
+    const pill = document.createElement('span');
+    pill.className = 'trait-pill';
+    pill.textContent = t.text;
+    pill.style.cssText = `background:${t.bg};color:${t.color};border-color:${t.border};`;
+    traitsEl.appendChild(pill);
+  });
+  document.getElementById('progress').style.width = '100%';
+  showScreen('screen-result');
+}
+
+function shareResult() {
+  const name = document.getElementById('r-name').textContent;
+  const emoji = document.getElementById('r-emoji').textContent;
+  const text = `${emoji} ฉันคือ "${name}" ใน Tales Runner!\n\nลองดูว่าแกเป็นตัวละครไหนได้เลย 🎮\n#TalesRunner #WhichCharacterAreYou`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => showToast());
+  } else {
+    showToast();
+  }
+}
+
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function retryQuiz() { startQuiz(); }
+
+makeStars();
+</script>
+</body>
+</html>
